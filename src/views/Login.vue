@@ -50,7 +50,8 @@ export default {
             this.$router.push('/todo')
           })
           .catch((error) => {
-            alert(error.message);
+            console.log(error)
+            alert("Invalid username or password");
           });
     }
   }
