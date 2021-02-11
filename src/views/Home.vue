@@ -2,8 +2,10 @@
   <div class="home">
     <h1>Welcome to Todo Application</h1>
     <h3>Please Register or Login</h3>
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img alt="Vue logo"
+         height="180"
+         src="../assets/logo.png">
+    <HelloWorld/>
   </div>
 </template>
 

@@ -8,7 +8,6 @@
         >
           <v-text-field
               v-model="user.name"
-              :counter="10"
               label="Name"
               required
           ></v-text-field>
@@ -33,8 +32,19 @@
           <v-text-field
               v-model="user.password"
               type="password"
-              :counter="10"
               label="Password"
+              required
+          ></v-text-field>
+        </v-col>
+
+        <v-col
+            cols="12"
+            md="4"
+        >
+          <v-text-field
+              v-model="user.confirmPassword"
+              type="password"
+              label="Confirm Password"
               required
           ></v-text-field>
         </v-col>
@@ -62,28 +72,34 @@ export default {
       user: {
         name: "",
         email: "",
-        password: ""
+        password: "",
+        confirmPassword: "",
       }
     };
   },
   methods: {
     userRegister() {
-      firebase
-          .auth()
-          .createUserWithEmailAndPassword(this.user.email, this.user.password)
-          .then((data) => {
-            data.user
-                .updateProfile({
-                  displayName: this.user.name
-                })
-                .then(() => {
-                  alert("Register Successfully !!")
-                  this.$router.push('/login')
-                });
-          })
-          .catch(err => {
-            alert(err.message);
-          });
+      if (this.user.password === this.user.confirmPassword) {
+        firebase
+            .auth()
+            .createUserWithEmailAndPassword(this.user.email, this.user.password)
+            .then((data) => {
+              data.user
+                  .updateProfile({
+                    displayName: this.user.name
+                  })
+                  .then(() => {
+                    alert("Register Successfully !!")
+                    this.$router.push('/login')
+                  });
+            })
+            .catch(err => {
+              alert(err.message);
+            });
+      }
+      else {
+        alert("Password and Confirm Password need to be the same")
+      }
     }
   },
 }

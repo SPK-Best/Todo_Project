@@ -10,6 +10,7 @@ Vue.config.productionTip = false
 const firebaseConfig = {
   apiKey: "AIzaSyCpOOdD3h2uZIAosVSX7hACff9PVWhfWus",
   authDomain: "todo-project-5e24e.firebaseapp.com",
+  databaseURL: "https://todo-project-5e24e-default-rtdb.firebaseio.com",
   projectId: "todo-project-5e24e",
   storageBucket: "todo-project-5e24e.appspot.com",
   messagingSenderId: "891673314028",

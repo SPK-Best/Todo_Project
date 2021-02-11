@@ -1,12 +1,26 @@
 <template>
+  <v-app style="
+    background: #3A1C71;
+    background: -webkit-linear-gradient(to right, #FFAF7B, #D76D77, #3A1C71);
+    background: linear-gradient(to right, #FFAF7B, #D76D77, #42b983);
+  ">
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/register">Register</router-link>
+      <v-btn text>
+        <router-link to="/">Home</router-link>
+      </v-btn>|
+
+      <v-btn text>
+        <router-link to="/login">Login</router-link>
+      </v-btn>|
+
+      <v-btn text>
+        <router-link to="/register">Register</router-link>
+      </v-btn>
     </div>
     <router-view/>
   </div>
+    </v-app>
 </template>
 
 <style lang="scss">
