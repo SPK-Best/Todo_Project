@@ -1,46 +1,39 @@
 <template>
   <v-form>
-    <v-container>
-      <v-row>
+
+    <v-img
+        src="https://d21buns5ku92am.cloudfront.net/67862/images/325088-Unknown-d517f7-large-1564050124.jpeg"
+        height="130"
+        contain
+    >
+    </v-img>
+
+    <v-container align-center justify-center>
+      <v-layout align-center justify-center>
         <v-col
-            cols="12"
-            md="4"
+            cols="18"
+            md="6"
         >
           <v-text-field
               v-model="user.name"
               label="Name"
               required
           ></v-text-field>
-        </v-col>
 
-        <v-col
-            cols="12"
-            md="4"
-        >
           <v-text-field
               v-model="user.email"
               type="email"
               label="E-mail"
               required
           ></v-text-field>
-        </v-col>
 
-        <v-col
-            cols="12"
-            md="4"
-        >
           <v-text-field
               v-model="user.password"
               type="password"
               label="Password"
               required
           ></v-text-field>
-        </v-col>
 
-        <v-col
-            cols="12"
-            md="4"
-        >
           <v-text-field
               v-model="user.confirmPassword"
               type="password"
@@ -48,7 +41,7 @@
               required
           ></v-text-field>
         </v-col>
-      </v-row>
+      </v-layout>
     </v-container>
 
     <v-btn
