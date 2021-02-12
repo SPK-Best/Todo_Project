@@ -2,7 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify';
-import firebase from "firebase/app";
+import firebase from "firebase";
+import 'firebase/firestore';
+import {firestorePlugin} from 'vuefire';
+
+Vue.use(firestorePlugin);
 
 Vue.config.productionTip = false
 
@@ -17,7 +21,7 @@ const firebaseConfig = {
   appId: "1:891673314028:web:e40e87a0e8ce68c8609bc9"
 };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+export const db = firebase.initializeApp(firebaseConfig).firestore();
 
 new Vue({
   router,
