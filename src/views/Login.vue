@@ -67,22 +67,6 @@ export default {
     email: { required, email },
     password: { required },
   },
-  computed: {
-    emailErrors() {
-      const errors = [];
-      if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push('Must be valid e-mail');
-      !this.$v.email.required && errors.push('E-mail is required');
-      return errors;
-    },
-    passwordErrors() {
-      const errors = [];
-      if (!this.$v.password.$dirty) return errors;
-      // eslint-disable-next-line no-unused-expressions
-      !this.$v.password.required && errors.push('Password is required');
-      return errors;
-    },
-  },
   methods: {
     userLogin(){
       this.$v.$touch();
