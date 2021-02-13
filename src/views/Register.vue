@@ -15,27 +15,27 @@
             md="6"
         >
           <v-text-field
-              v-model="user.name"
+              v-model="name"
               label="Name"
               required
           ></v-text-field>
 
           <v-text-field
-              v-model="user.email"
+              v-model="email"
               type="email"
               label="E-mail"
               required
           ></v-text-field>
 
           <v-text-field
-              v-model="user.password"
+              v-model="password"
               type="password"
               label="Password"
               required
           ></v-text-field>
 
           <v-text-field
-              v-model="user.confirmPassword"
+              v-model="confirmPassword"
               type="password"
               label="Confirm Password"
               required
@@ -57,31 +57,42 @@
 
 <script>
 import firebase from "firebase";
+import { required, email, minLength, sameAs,} from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate';
 
 export default {
-  name: "Register.vue",
+  name: "Register",
   data() {
     return {
-      user: {
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
-      }
     };
+  },
+  mixins: [validationMixin],
+  validations: {
+    name: {required},
+    email: {required, email},
+    password: {required, minLength: minLength(6)},
+    confirmedPassword: { required, sameAsPassword: sameAs('password') },
   },
   methods: {
     userRegister() {
-      if (this.user.password === this.user.confirmPassword) {
+      this.$v.$touch();
+      if (this.password === this.confirmPassword) {
         firebase
             .auth()
-            .createUserWithEmailAndPassword(this.user.email, this.user.password)
+            .createUserWithEmailAndPassword(this.email, this.password)
             .then((data) => {
               data.user
                   .updateProfile({
-                    displayName: this.user.name
+                    displayName: this.name
                   })
                   .then(() => {
+                    this.$store.dispatch('userRegister', {
+                      data,
+                    });
                     alert("Register Successfully !!")
                     this.$router.push('/login')
                   });

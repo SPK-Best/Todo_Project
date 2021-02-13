@@ -11,27 +11,42 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta:{
+      requiredLogin: false,
+    },
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta:{
+      requiredLogin: false,
+    },
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta:{
+      requiredLogin: false,
+    },
   },
   {
     path: '/todo',
     name: 'Todo',
-    component: Todo
+    component: Todo,
+    meta:{
+      requiredLogin: true,
+    },
   },
 ]
 
 const router = new VueRouter({
-  routes
-})
+  mode: 'hash',
+  routes,
+});
+
+Vue.$router = router;
 
 export default router

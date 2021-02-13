@@ -2,6 +2,7 @@
   <div>
       <v-content>
         <v-container>
+          <p class="headline">{{day}}, {{date}}{{ord}} {{year}}</p>
 
           <h2 class="display-1 pl-3">
             Todo List:&nbsp;
@@ -17,12 +18,12 @@
           <v-text-field
               label="Add Todo"
               outlined
-              v-model="task"
+              v-model="newTask"
               @keydown.enter="addItem"
           >
 
             <v-fade-transition slot="append">
-              <v-icon v-if="task" @click="addItem">
+              <v-icon v-if="newTask" @click="addItem">
               </v-icon>
             </v-fade-transition>
           </v-text-field>
@@ -57,7 +58,7 @@
               <template v-for="(task, i) in tasks">
                 <v-divider v-if="i !== 0" :key="`${i}-divider`"></v-divider>
 
-                <v-list-tile :key="`${i} - ${task.text}`">
+                <v-list-item-title :key="`${i} - ${task.text}`">
                   <v-list-tile-action>
                     <v-checkbox v-model="task.done" color="success">
                       <div
@@ -66,9 +67,13 @@
                           v-text="task.text"
                       >Line-through text</div>
                     </v-checkbox>
+                    <v-list-item-subtitle>Date Created: {{ date }}{{ ord }} {{ day }} {{ year }}</v-list-item-subtitle>
+                      <v-btn icon color="red" @click="removeTodo(i)">
+                        <v-icon>mdi-delete</v-icon>
+                    </v-btn>
                   </v-list-tile-action>
                   <v-spacer></v-spacer>
-                </v-list-tile>
+                </v-list-item-title>
               </template>
             </v-slide-y-transition>
           </v-card>
@@ -89,12 +94,21 @@
 import firebase from "firebase";
 
 export default {
-  name: "Todo.vue",
+  name: "Todo",
   data() {
     return {
       user: null,
-      tasks: [],
-      task: null
+      tasks: [
+        {
+          done: false,
+          text: 'Finish Project',
+        },
+      ],
+      newTask: null,
+      day: this.todoDay(),
+      date: new Date().getDate(),
+      ord: this.nth(new Date().getDate()),
+      year: new Date().getFullYear(),
     };
   },
   computed: {
@@ -113,32 +127,42 @@ export default {
       return this.tasks.length - this.calculateCompleted;
     }
   },
-  created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.user = user;
-      } else {
-        this.user = null;
-      }
-    });
-  },
   methods: {
     userLogout() {
-      firebase.auth().signOut().then(() => {
-        firebase.auth().onAuthStateChanged(() => {
-          this.$router.push('/login')
-        })
+      firebase.auth()
+          .signOut()
+          .then((data) => {
+        this.$store.dispatch('userLogout', false);
+        this.$store.dispatch('setUser', data);
+        this.$router.push('/login')
       })
     },
     addItem() {
-      if (this.task.text != '') {
+      if (this.newTask.text !== '') {
           this.tasks.push({
-          done: false,
-          text: this.task
+            done: false,
+            text: this.newTask
         });
       }
-      this.task = null;
-    }
+      this.newTask = null;
+    },
+    removeTodo(index) {
+      this.tasks.splice(index, 1);
+    },
+    todoDay() {
+      const d = new Date();
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      return days[d.getDay()];
+    },
+    nth(d) {
+      if(d > 3 && d < 21) return 'th';
+      switch (d % 10) {
+        case 1:  return "st";
+        case 2:  return "nd";
+        case 3:  return "rd";
+        default: return "th";
+      }
+    },
   }
 };
 </script>

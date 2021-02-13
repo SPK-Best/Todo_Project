@@ -8722,6 +8722,11 @@ vuefire@^2.2.5:
   dependencies:
     "@posva/vuefire-core" "^2.3.4"
 
+vuelidate@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.7.6.tgz#84100c13b943470660d0416642845cd2a1edf4b2"
+  integrity sha512-suzIuet1jGcyZ4oUSW8J27R2tNrJ9cIfklAh63EbAkFjE380iv97BAiIeolRYoB9bF9usBXCu4BxftWN1Dkn3g==
+
 vuetify-loader@^1.7.0:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.7.2.tgz#5cdc45309496cf3a5fe431fd7611706ffa4aa8c8"
@@ -8735,6 +8740,11 @@ vuetify@^2.4.0:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.4.3.tgz#8d6f15dde396e81f64e130d8ac0bc272e030879c"
   integrity sha512-i2/Df0U0sedlaCbft4NMbna7WXbTCBhKVYTMjBrLVzrYTTWqzSO7ZCxLuDRY7MjwQhn7AOec7ent9U/NyIICqA==
+
+vuex@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
+  integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"

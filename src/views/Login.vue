@@ -16,14 +16,14 @@
     >
 
     <v-text-field
-        v-model="user.email"
+        v-model="email"
         type="email"
         label="Email"
         required
     ></v-text-field>
 
     <v-text-field
-        v-model="user.password"
+        v-model="password"
         type="password"
         label="Password"
         required
@@ -51,42 +51,65 @@
 
 <script>
 import firebase from "firebase";
+import { required, email } from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate';
 
 export default {
   name: "Login",
   data() {
     return {
-      user: {
         email: '',
-        password: ''
-      }
+        password: '',
     };
+  },
+  mixins: [validationMixin],
+  validations: {
+    email: { required, email },
+    password: { required },
+  },
+  computed: {
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push('Must be valid e-mail');
+      !this.$v.email.required && errors.push('E-mail is required');
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      // eslint-disable-next-line no-unused-expressions
+      !this.$v.password.required && errors.push('Password is required');
+      return errors;
+    },
   },
   methods: {
     userLogin(){
+      this.$v.$touch();
       firebase
           .auth()
-          .signInWithEmailAndPassword(this.user.email, this.user.password)
-          .then(() => {
+          .signInWithEmailAndPassword(this.email, this.password)
+          .then((data) => {
+            this.$store.dispatch('userLogin', data.user);
+            this.$store.dispatch('userRegister', { data });
             this.$router.push('/todo')
           })
           .catch((error) => {
-            console.log(error)
+            console.log(error.message);
             alert("Invalid username or password");
           });
     },
     googleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider).then(() => {
-        this.$router.replace('/todo');
+      firebase.auth().signInWithPopup(provider).then((data) => {
+        this.$store.dispatch('userLogin', data.user);
+        this.$store.dispatch('userRegister', { data });
+        this.$router.push('/todo')
       }).catch((err) => {
         alert(err.message);
       });
-    }
-  }
-}
+    },
+  },
+};
+
 </script>
-
-<style scoped>
-
-</style>
