@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Todo from "@/views/Todo";
+import firebase from '@/plugins/firebase';
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,19 @@ const routes = [
 const router = new VueRouter({
   mode: 'hash',
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const identifyUser = to.matched.some((record) => record.meta.requiredLogin);
+  if (identifyUser && !await firebase.getCurrentUser()) {
+    next({ name: 'Login' });
+  }
+  else if (!identifyUser && await firebase.getCurrentUser()){
+    next({ name: 'Todo'});
+  }
+  else {
+    next();
+  }
 });
 
 Vue.$router = router;

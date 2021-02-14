@@ -17,12 +17,14 @@
           <v-text-field
               v-model="name"
               label="Name"
+              hint="Enter your name"
               required
           ></v-text-field>
 
           <v-text-field
               v-model="email"
               type="email"
+              hint="Enter your email"
               label="E-mail"
               required
           ></v-text-field>
@@ -31,6 +33,7 @@
               v-model="password"
               type="password"
               label="Password"
+              hint="At least 6 characters"
               required
           ></v-text-field>
 
@@ -38,6 +41,7 @@
               v-model="confirmPassword"
               type="password"
               label="Confirm Password"
+              hint="Confirm your password"
               required
           ></v-text-field>
         </v-col>
@@ -90,9 +94,7 @@ export default {
                     displayName: this.name
                   })
                   .then(() => {
-                    this.$store.dispatch('userRegister', {
-                      data,
-                    });
+                    this.$store.dispatch('userRegister', { data, });
                     alert("Register Successfully !!")
                     this.$router.push('/login')
                   });

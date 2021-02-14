@@ -15,9 +15,16 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-firebase.auth().onAuthStateChanged((user) =>{
+firebase.auth().onAuthStateChanged((user) => {
     store.dispatch('userRegister', user);
+    store.dispatch('userLogin', user);
+});
+
+firebase.getCurrentUser = () => new Promise((resolve, reject) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        unsubscribe();
+        resolve(user);
+    }, reject);
 });
 
 export default firebase;
