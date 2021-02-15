@@ -3,32 +3,46 @@
     <v-content>
       <v-container>
         <p class="headline">{{ day }}, {{ date }}{{ ord }} {{ year }}</p>
+        <v-container fill-height fluid>
+          <v-row align="center"
+                 justify="center">
+            <v-col
+                cols="12"
+                sm="6"
+                md="4"
+            >
 
-        <h2 class="display-1 pl-3">
-          Todo List:&nbsp;
-          <v-fade-transition leave-absolute>
-              <span :key="`tasks-${tasks.length}`">
-                {{ tasks.length }}
-              </span>
-          </v-fade-transition>
-        </h2>
+              <v-text-field
+                  label="Add Todo"
+                  outlined
+                  v-model="newTask"
+              >
+              </v-text-field>
 
-        <br>
+            </v-col>
 
-        <v-text-field
-            label="Add Todo"
-            outlined
-            v-model="newTask"
-            @keydown.enter="addItem"
-        >
+            <v-col
+                cols="12"
+                sm="6"
+                md="4"
+            >
+              <v-text-field
+                  label="Due Date"
+                  type="date"
+                  v-model="finishDate"
+              ></v-text-field>
 
-          <v-fade-transition slot="append">
-            <v-icon v-if="newTask" @click="addItem">
-            </v-icon>
-          </v-fade-transition>
-        </v-text-field>
+            </v-col>
 
-        <v-divider class="mt-3"></v-divider>
+            <v-btn @click="addItem"
+                   color="#43A047">
+              Add Task
+            </v-btn>
+
+          </v-row>
+        </v-container>
+
+        <v-divider class="mb-3"></v-divider>
 
         <v-toolbar>
           <v-tabs
@@ -37,11 +51,11 @@
           >
 
             <v-tab>
-                <strong class="mx-3 info--text text--darken-3"> Remaining: {{ calculateRemaining }} </strong>
+              <strong class="mx-3 info--text text--darken-3"> Active: {{ calculateRemaining }} </strong>
             </v-tab>
 
             <v-tab>
-                <strong class="mx-3 green--text"> Completed: {{ calculateCompleted }} </strong>
+              <strong class="mx-3 green--text"> Completed: {{ calculateCompleted }} </strong>
             </v-tab>
 
           </v-tabs>
@@ -57,72 +71,68 @@
 
         <v-divider class="mb-3"></v-divider>
 
-        <v-card v-if="tasks.length > 0" color="#90CAF9">
-          <v-slide-y-transition class="py-0" group tag="v-list">
-            <template v-for="(task, i) in tasks">
-
-              <v-divider v-if="i !== 0" :key="`${i}-divider`"></v-divider>
-
-              <v-list-item-title :key="`${i} - ${task.text}`">
-
-                <v-list-tile-action>
-
-                  <v-checkbox v-model="task.done" color="success">
-                    <div
-                        slot="label"
-                        :class="(task.done && 'text-decoration-line-through') || 'text--primary'"
-                        v-text="task.text"
-                    >Line-through text
-                    </div>
-                  </v-checkbox>
-
-                  <v-list-item-subtitle>Date Created: {{ date }}{{ ord }} {{ day }} {{ year }}</v-list-item-subtitle>
-
-                  <v-btn icon color="red" @click="removeTodo(i)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-
-                </v-list-tile-action>
-
-                <v-spacer></v-spacer>
-
-              </v-list-item-title>
-            </template>
-          </v-slide-y-transition>
+        <v-card v-for="items in todos" v-bind:key="items.text" v-model="newTask" color="#90CAF9">
+          <v-card-title>
+            <v-checkbox v-model="items.done" color="success">
+              <div
+                  slot="label"
+                  :class="(items.done && 'text-decoration-line-through') || 'text--primary'"
+                  v-text="items.text"
+              >Line-through text
+              </div>
+            </v-checkbox>
+            <v-list-item-title>Due Date: {{ items.finishDate }}</v-list-item-title>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+              <v-icon color="blue">mdi-plus</v-icon>
+            </v-btn>
+            <v-btn icon color="red" @click="removeTodo(items.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-title>
         </v-card>
+        <v-divider></v-divider>
+        <br>
+        <v-btn
+            color="#E53935"
+            type="submit"
+            class="mr-4"
+            @click="userLogout">
+          Logout
+        </v-btn>
       </v-container>
     </v-content>
-    <v-btn
-        color="#E53935"
-        type="submit"
-        class="mr-4"
-        @click="userLogout"
-    >
-      Logout
-    </v-btn>
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import 'firebase/database';
 
 export default {
   name: "Todo",
   data() {
     return {
       user: null,
-      tasks: [
-        {
-          done: false,
-          text: 'Finish Project',
-        },
-      ],
+      todoRef: null,
+      todos: {},
+      finishDate: '',
+      tasks: [],
       newTask: null,
       day: this.todoDay(),
       date: new Date().getDate(),
       ord: this.nth(new Date().getDate()),
       year: new Date().getFullYear(),
     };
+  },
+  created() {
+    this.todoRef = firebase.database().ref(`/users/${this.$store.state.auth.user.uid}`);
+  },
+  mounted() {
+    this.todoRef.on('value', (snapshot) => {
+      this.todos = snapshot.val();
+      console.log(this.todos);
+    });
   },
   computed: {
     calculateCompleted() {
@@ -131,8 +141,7 @@ export default {
     calculateProgress() {
       if ((isNaN(this.calculateCompleted / this.tasks.length) * 100)) {
         return 100;
-      }
-      else {
+      } else {
         return (this.calculateCompleted / this.tasks.length) * 100;
       }
     },
@@ -144,23 +153,31 @@ export default {
     userLogout() {
       firebase.auth()
           .signOut()
-          .then((data) => {
-            this.$store.dispatch('userLogout', false);
-            this.$store.dispatch('setUser', data);
+          .then(() => {
+            this.$store.dispatch('userLogout', null);
             this.$router.push('/login')
           })
     },
     addItem() {
-      if (this.newTask.text !== '') {
-        this.tasks.push({
-          done: false,
-          text: this.newTask
+      const new_task = this.newTask.text;
+      const date = this.finishDate
+      if (new_task !== '' && date !== '') {
+        this.todoRef.push({
+          text: this.newTask.trim(),
+          isDone: false,
+          finishDate: this.finishDate,
         });
+      } else {
+        alert("Please fill in both Todo and Due date")
       }
-      this.newTask = null;
+      this.newTask = '';
+      this.finishDate = '';
     },
     removeTodo(index) {
-      this.tasks.splice(index, 1);
+      firebase
+          .database()
+          .ref(`users/${this.$store.state.auth.user.uid}/${index}`)
+          .set({});
     },
     todoDay() {
       const d = new Date();

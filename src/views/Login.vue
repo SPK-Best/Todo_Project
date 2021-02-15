@@ -74,8 +74,8 @@ export default {
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then((data) => {
-            this.$store.dispatch('userLogin', data.user);
-            this.$store.dispatch('userRegister', { data });
+            this.$store.dispatch('auth/userLogin', data.user);
+            this.$store.dispatch('auth/userRegister', { data });
             this.$router.push('/todo')
           })
           .catch((error) => {
@@ -86,8 +86,8 @@ export default {
     googleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider).then((data) => {
-        this.$store.dispatch('userLogin', data.user);
-        this.$store.dispatch('userRegister', { data });
+        this.$store.dispatch('auth/userLogin', data.user);
+        this.$store.dispatch('auth/userRegister', { data });
         this.$router.push('/todo')
       }).catch((err) => {
         alert(err.message);
