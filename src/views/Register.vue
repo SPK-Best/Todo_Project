@@ -2,11 +2,11 @@
   <v-form>
 
     <v-img
-        src="https://d21buns5ku92am.cloudfront.net/67862/images/325088-Unknown-d517f7-large-1564050124.jpeg"
-        height="130"
+        :src="require('../assets/Register.jpeg')"
+        class="my-3"
         contain
-    >
-    </v-img>
+        height="120"
+    />
 
     <v-container align-center justify-center>
       <v-layout align-center justify-center>

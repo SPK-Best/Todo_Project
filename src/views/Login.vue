@@ -2,11 +2,11 @@
   <v-form>
 
     <v-img
-        src="http://irtrd.in/wp-content/uploads/2018/03/1429683477000_loginlogo_-1.jpg"
-        height="180"
+        :src="require('../assets/login.jpg')"
+        class="my-3"
         contain
-    >
-    </v-img>
+        height="180"
+    />
 
     <v-container align-center justify-center>
       <v-layout align-center justify-center>
